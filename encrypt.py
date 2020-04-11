@@ -29,5 +29,5 @@ class enc_class(object):
         raw = obj.pad(raw)
         iv = Random.new().read(AES.block_size)
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw))
+        return (iv + cipher.encrypt(raw))
 

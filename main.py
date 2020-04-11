@@ -5,6 +5,7 @@ from rd_ext import exc_frame
 
 
 
+
  #----------------------------main function-------------------------------#
 def main():  
   #calling the encrypt function
@@ -15,7 +16,7 @@ def main():
 
   hide_message=input("Enter the message you want to hide: ")
   cphr_text=enpt_obj.encrypt(hide_message)
-  # print(cphr_text)
+  print(cphr_text)
 
 
   #calling the encoding functions
@@ -32,16 +33,15 @@ def main():
 
 
 
-  #calling the main encoding function
-                          # """acts as a main  function which calls all the main function"""
+  #calling the main encoding function#
+                     
   len_counter=0 
-
   for i in range(count-1):
-    img_file1,img_file2=encd_obj
-    rgb_list1,rgb_list2=
-    len_counter=encode(rgb_list1,rgb_list2,len_counter)
+    img_file1,img_file2=encd_obj.extract_image(i,i+1)
+    rgb_list1,rgb_list2=encd_obj.get_pixel(img_file1,img_file2,cphr_text)
+    len_counter=encd_obj.encode(rgb_list1,rgb_list2,len_counter,th)
     if(len_counter>=len(th)-1):
-      #put_back(img_file2,rgb_list2)
+      encd_obj.put_back(img_file2,rgb_list2)
       break
 
 
