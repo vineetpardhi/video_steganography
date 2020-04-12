@@ -11,7 +11,7 @@ class encode_data(object):
         sb = s.encode('ascii')
         return (format(b, '08b') for b in sb)
 
-    def conv_ascii(cphr_txt):
+    def conv_ascii(self,cphr_txt):
         obj=encode_data()
         th=''
         for s in obj.iter_bin(str(cphr_txt)):
@@ -48,7 +48,7 @@ class encode_data(object):
         f_obj=encode_data()
 
         if len(rgb_list1)==len(rgb_list2):  #if the length of both the list is same then only proceed
-            counter = 0
+            counter=18
             ef = 1
             for i in range(len(rgb_list1)):
                 if(ef == 0):
@@ -93,6 +93,7 @@ class encode_data(object):
                             rgb_list2[i][j]=f_obj.flip(rgb_list2[i][j])
                         else:
                         #do nothing
+                            return -1
                             continue
                     elif(th[counter] == 'T'):
                         # print('there is data')
@@ -112,10 +113,10 @@ class encode_data(object):
 
      
     def extract_image(self,a,b):                 #-----extract image----#
-        img_path1='/home/akhi/Desktop/mp2/frames//frame'+str(a)+'.jpg'
+        img_path1='C:/Users/vinee/OneDrive/Documents/Video Steganography/video_steganography/frames/frame'+str(a)+'.png'
         img_file1 = img_path1
         img = cv2.imread(img_file1, cv2.IMREAD_COLOR)  
-        img_path2='/home/akhi/Desktop/mp2/frames/frame'+str(b)+'.jpg'
+        img_path2='C:/Users/vinee/OneDrive/Documents/Video Steganography/video_steganography/frames/frame'+str(b)+'.png'
         img_file2=img_path2
         return img_file1,img_file2
 
@@ -131,26 +132,26 @@ class encode_data(object):
         #creating list 1 for 1st frame 
         rgb_list1=[]
         
-        for i in range(0,3*len(cphr_txt)):
+        for i in range(0,3*len(cphr_txt)+3):
             rgb_list1.append(r_obj.rgb_of_pixel(img_file1,i,0))  
         #print(rgb_list1)
         
         #creating list 2 for 2nd frame
         rgb_list2=[]
-        for i in range(0,3*len(cphr_txt)):
+        for i in range(0,3*len(cphr_txt)+3):
             rgb_list2.append(r_obj.rgb_of_pixel(img_file2,i,0))
         #print(rgb_list2)
 
-        print('----------------------------encoding starts------------------------------------')
         return rgb_list1,rgb_list2
      
-    def put_pixel(self,img_path,x,y,a):
-        im=Image.open(img_path)
-        im.putpixel((x,y),a)
     
-    def put_back(img2,rgblist2):
-        for i in range(0,3*len(cphr_txt)):
-            put_pixel(img2,i,0,tuple(rgb_list2[i])) 
+        
+    
+    def put_back(self,img2,rgb_list2,cphr_txt):
+        im=Image.open(img2) 
+        for i in range(0,3*len(cphr_txt)+3):
+            im.putpixel((i,0),(tuple(rgb_list2[i])))
+        im.save('C:/Users/vinee/OneDrive/Documents/Video Steganography/video_steganography/frames/framenew.png')
 
 
 
