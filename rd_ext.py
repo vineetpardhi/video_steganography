@@ -14,7 +14,7 @@ class exc_frame(object):
         os.mkdir(path)
         while success and count!=5:
             
-            cv2.imwrite( os.path.join(path,"frame%d.png" % count), image)     # save frame as JPEG file     
+            cv2.imwrite( os.path.join(path,"frame%d.png" % count), image)     # save frame as PNG file     
             success,image = vidcap.read()
             print('Read a new frame: ', success)
             count +=1

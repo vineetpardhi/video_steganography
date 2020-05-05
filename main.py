@@ -4,6 +4,7 @@ from encode import encode_data
 from rd_ext import exc_frame
 from PIL import Image
 from decode import decd_data
+from decrypt import decpt_data
 import tkinter as tk
 import os
 from functools import partial
@@ -51,7 +52,7 @@ def encode(e1,e2,e3):
     parent_directory=os.path.split(url)
     pathIn= parent_directory[0]
     pathOut='video.avi'
-    fps=25
+    fps=0.5
     cn_obj=cnvt_vdo()
     enc_loc=cn_obj.convert_frames_to_video(pathIn,pathOut,fps)
 
@@ -64,8 +65,52 @@ def encode(e1,e2,e3):
     
     
 def decode(e4,e5):
-  return
+  d_url=(e4.get())
+  d_passwd=(e5.get())
 
+
+  #-------extracting the frames for decoding---------#
+
+  
+
+  d_extf=exc_frame()
+
+  dcount=d_extf.ext_frames(d_url)
+
+
+  #-----------decoding function-------------#
+  dcd_obj=decd_data()
+  
+  for i in range(dcount-1):
+    imgf1,imgf2=dcd_obj.extract_image(i,i+1,d_url)
+    data=dcd_obj.decode(imgf1)
+    if data:
+      break
+  
+  #processing the data
+  #print(data)
+  #data=data[:-1]
+  
+  
+
+  # #------decrypting the cphr text to get plain text----#
+  # decrypt_obj=decpt_data()
+  # dkey=decrypt_obj.generate_key(d_passwd)
+  # message=decrypt_obj.decrypt(data,dkey)
+  # print(bytes.decode(message))
+
+
+
+
+  
+  
+  
+
+  
+
+    
+    
+  
 
   
 
@@ -117,8 +162,8 @@ if __name__ == "__main__":
     e5.place(x = 750,y = 100)
 
 
-    decode=partial(decode)
-    tk.Button(master, text='Decode').place(x = 750,y = 190)
+    decode=partial(decode,e4,e5)
+    tk.Button(master, text='Decode',command=decode).place(x = 750,y = 190)
 
     master.mainloop()
     

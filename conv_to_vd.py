@@ -21,12 +21,12 @@ class cnvt_vdo(object):
             size=(width,height)
             frame_arr.append(img)
 
-            out=cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'DIVX'),fps,size)
+        out=cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'XVID'),fps,size)
 
-            for i in range(len(frame_arr)):
-                out.write(frame_arr[i])
-            out.release()
-        return pathIn+pathOut
+        for i in range(len(frame_arr)):
+            out.write(frame_arr[i])
+        out.release()
+        return pathIn+"\\"+pathOut
         #print("the video is saved at location"+str(pathIn))
 
         
