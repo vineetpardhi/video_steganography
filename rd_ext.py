@@ -8,12 +8,15 @@ class exc_frame(object):
         vidcap = cv2.VideoCapture(url)
         success,image = vidcap.read()
         count = 0
-        path = 'C:/Users/vinee/OneDrive/Documents/Video Steganography/video_steganography/frames/'
+        directory="frames"
+        head_tail=os.path.split(url)
+        path = os.path.join(head_tail[0],directory)
+        os.mkdir(path)
         while success and count!=5:
             
             cv2.imwrite( os.path.join(path,"frame%d.png" % count), image)     # save frame as JPEG file     
             success,image = vidcap.read()
             print('Read a new frame: ', success)
-            count +=1 
+            count +=1
 
         return count

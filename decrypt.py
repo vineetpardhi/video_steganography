@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 class decpt_data(object):
 
     def unpad(self,s):
-        return lambda s:s[:-ord(s[len(s) - 1:])]
+        self.unpad=lambda s:s[:-ord(s[len(s) - 1:])]
     
     def generate_key(self,password_provided):
         
@@ -24,8 +24,8 @@ class decpt_data(object):
 
 
     def decrypt(self,enc):
-        d_obj=decpt_data()
         enc = base64.b64decode(enc)
         iv = enc[:16]
         cipher = AES.new(key, AES.MODE_CBC, iv)
-        return d_obj.unpad(cipher.decrypt(enc[16:]))
+        return self.unpad(cipher.decrypt(enc[16:]))
+        

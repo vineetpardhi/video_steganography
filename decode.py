@@ -37,17 +37,35 @@ class decd_data(object):
 
 
     def conv_str(self,msg):
-        mess=[msg[i:i+8] for i in range(0, len(msg), 8)]
+        message=decode(test_list1,test_list2)
+
+        mess=[message[i:i+8] for i in range(0, len(message), 8)]
         m=''
         for i in range(len(mess)):
             m+=chr(int(mess[i],2))
+        
         recvd_text = m
         recvd_text = recvd_text[:-1]
-        return recvd_text 
+        
+        return recvd_text
   
-    def getpixel(self,img_path,cphr_text):
+    def getnewp(self,img_path,cphr_text):
+        img_obj=cv2.imread(img_path,cv2.IMREAD_COLOR)
+        w,h,c=img_obj.shape
         new_im =Image.open(img_path)
         nl=[]
-        for i in range(0,3*len(str(cphr_text))+3):
-            nl.append( new_im.getpixel((i, 0))) 
+
+        if(len(th)<=h):
+            for i in range(0,len(th)+24):
+                r,g,b=new_im.getpixel((i, 0))
+                vl=[r,g,b]
+                nl.append(vl)
+        else:
+            for i in range(h):
+                for j in range(w):
+                    r,g,b=new_im.getpixel((i, j))
+                    vl=[r,g,b]
+                    nl.append(vl)
+                    
         return nl
+        
