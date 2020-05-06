@@ -6,6 +6,7 @@ from PIL import Image
 from decode import decd_data
 from decrypt import decpt_data
 import tkinter as tk
+from tkinter import messagebox as mb
 import os
 from functools import partial
 from conv_to_vd import cnvt_vdo
@@ -20,11 +21,11 @@ def encode(e1,e2,e3):
     enpt_obj.generate_key(password)
 
     cphr_text=enpt_obj.encrypt(hide_message)
-    print("the ciphertext is: "+str(cphr_text))
+    # print("the ciphertext is: "+str(cphr_text))
   
 
     encd_obj=encode_data()
-    th=encd_obj.conv_ascii(cphr_text)
+    th=encd_obj.conv_ascii(hide_message)
     #print(th)
 
 
@@ -56,7 +57,7 @@ def encode(e1,e2,e3):
     cn_obj=cnvt_vdo()
     enc_loc=cn_obj.convert_frames_to_video(pathIn,pathOut,fps)
 
-    loc.set("the encoded video is stored at location"+str(enc_loc))
+    mb.showinfo('the encoded video is located at',enc_loc)
     
     
     
@@ -73,32 +74,35 @@ def decode(e4,e5):
 
   
 
-  d_extf=exc_frame()
+  # d_extf=exc_frame()
 
-  dcount=d_extf.ext_frames(d_url)
+  # dcount=d_extf.ext_frames(d_url)
 
 
-  #-----------decoding function-------------#
+  # #-----------decoding function-------------#
+  
   dcd_obj=decd_data()
+  head_tail=os.path.split(d_url)
+  imgf2=head_tail[0]+"/frames/frame1.png"
+  data=dcd_obj.decode(imgf2)
   
-  for i in range(dcount-1):
-    imgf1,imgf2=dcd_obj.extract_image(i,i+1,d_url)
-    data=dcd_obj.decode(imgf1)
-    if data:
-      break
+  # for i in range(dcount-1):
+  #   imgf1,imgf2=dcd_obj.extract_image(i,i+1,d_url)
+  #   
+  #   if data:
+  #     break
   
-  #processing the data
-  #print(data)
-  #data=data[:-1]
+  # processing the data
+  # print(data)
+  
   
   
 
-  # #------decrypting the cphr text to get plain text----#
+  #------decrypting the cphr text to get plain text----#
   # decrypt_obj=decpt_data()
   # dkey=decrypt_obj.generate_key(d_passwd)
-  # message=decrypt_obj.decrypt(data,dkey)
-  # print(bytes.decode(message))
-
+  # hidden_message=decrypt_obj.decrypt(data,dkey)
+  mb.showinfo('secret message', data)
 
 
 
@@ -139,9 +143,7 @@ if __name__ == "__main__":
     e2.place(x = 250,y = 100)
     e3.place(x = 250,y = 150)
 
-    loc=tk.StringVar()
-
-    video_loc =tk.Label(master,text="",textvariable=loc).place(x = 200,y = 250)
+    
     
     encode=partial(encode,e1,e2,e3)
     #.grid(row=3, column=0, sticky=tk.W, pady=4)

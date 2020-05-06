@@ -46,7 +46,7 @@ class encode_data(object):
         # print(rgb_list2)
 
         if len(rgb_list1)==len(rgb_list2):  #if the length of both the list is same then only proceed
-            counter=18
+            counter=0
             ef = 1
             for i in range(len(rgb_list1)):
                 if(ef == 0):

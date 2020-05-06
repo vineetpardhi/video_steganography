@@ -13,6 +13,7 @@ class cnvt_vdo(object):
         
         
         files.sort(key=lambda x: int(x[5:-4]))
+        files.sort()
 
         for i in range(len(files)):
             filename=frames_path+files[i]
@@ -21,11 +22,12 @@ class cnvt_vdo(object):
             size=(width,height)
             frame_arr.append(img)
 
-        out=cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'XVID'),fps,size)
+        out=cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'DIVX'),fps,size)
 
         for i in range(len(frame_arr)):
             out.write(frame_arr[i])
         out.release()
+        
         return pathIn+"\\"+pathOut
         #print("the video is saved at location"+str(pathIn))
 
