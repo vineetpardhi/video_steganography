@@ -10,40 +10,39 @@ import os
 
 class decd_data(object):
 
-
-
-    def extract_image(self,a,b,url):                 #-----extract image----#
-        head_tail=os.path.split(url)
-        img_path=head_tail[0].replace("\\","/")
-        img_path1=img_path+'/frames/frame'+str(a)+'.png'
-        img_file1 = img_path1
-        img = cv2.imread(img_file1, cv2.IMREAD_COLOR)  
-        img_path2=img_path+'/frames/frame'+str(b)+'.png'
-        img_file2=img_path2
-        return img_file1,img_file2
-
-
-    def decode(self,img):
-        #print(img)
-        image = Image.open(img, 'r') 
+    def decode(self,img1,img2): 
+        image2 = Image.open(img2, 'r')
+        image1= Image.open(img1,'r') 
         
         data = '' 
-        imgdata = iter(image.getdata()) 
+        imgdata1 = iter(image1.getdata()) 
+        imgdata2 = iter(image2.getdata())
+
         
-        while (True): 
-            pixels = [value for value in imgdata.__next__()[:3] +
-                                    imgdata.__next__()[:3] +
-                                    imgdata.__next__()[:3]] 
-            # string of binary data 
-            binstr = '' 
+
+        while (True):
+            pixels1=[value for value in imgdata1.__next__()[:3] +
+                                    imgdata1.__next__()[:3] +
+                                    imgdata1.__next__()[:3] ]
             
-            for i in pixels[:8]: 
-                if (i % 2 == 0): 
+        
+            pixels2=[value for value in imgdata2.__next__()[:3] +
+                                    imgdata2.__next__()[:3] +
+                                    imgdata2.__next__()[:3] ]
+
+            binstr=str()
+
+            for a,b in zip(pixels1[:8],pixels2[:8]):
+                if (abs(a-b) % 2 == 0): 
                     binstr += '0'
                 else: 
                     binstr += '1'
                     
             data += chr(int(binstr, 2)) 
-            if (pixels[-1] % 2 != 0):
-                print(data) 
-                return data
+            if ( abs(pixels1[-1]-pixels2[-1]) % 2 != 0):
+                print('no more data') 
+                return data 
+
+
+
+    

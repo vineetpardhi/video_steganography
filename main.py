@@ -25,7 +25,6 @@ def encode(e1,e2,e3):
   
 
     encd_obj=encode_data()
-    th=encd_obj.conv_ascii(hide_message)
     #print(th)
 
 
@@ -33,19 +32,22 @@ def encode(e1,e2,e3):
     exc_obj=exc_frame()
     count=exc_obj.ext_frames(url)
 
-
+    directory="frames"
+    head_tail=os.path.split(url)
+    mod_url = os.path.join(head_tail[0],directory)
 
     #calling the main encoding function#
     print('----------------------------encoding starts------------------------------------')                 
-    len_counter=0 
-    for i in range(count-1):
-      img_file1,img_file2=encd_obj.extract_image(i,i+1,url)
-      rgb_list1,rgb_list2=encd_obj.get_pixel(img_file1,img_file2,cphr_text,th)
-      len_counter=encd_obj.encode(rgb_list1,rgb_list2,len_counter,th)
-      if(len_counter==-1):
-        encd_obj.put_back(img_file2,rgb_list2,cphr_text,i+1,th,url)
-        print("ho gaya encoding")
-        break
+
+    for i in range(1):
+      img1=mod_url+"\\frame"+str(i)+".png"
+      img2=mod_url+"\\frame"+str(i+1)+".png"
+      encd_obj.encode(img1,img2,cphr_text)
+    
+
+
+
+      
 
     
         
@@ -82,27 +84,27 @@ def decode(e4,e5):
   # #-----------decoding function-------------#
   
   dcd_obj=decd_data()
+  
+  directory="frames"
   head_tail=os.path.split(d_url)
-  imgf2=head_tail[0]+"/frames/frame1.png"
-  data=dcd_obj.decode(imgf2)
+  mod_url = os.path.join(head_tail[0],directory)
+
+
+  data=str()
   
-  # for i in range(dcount-1):
-  #   imgf1,imgf2=dcd_obj.extract_image(i,i+1,d_url)
-  #   
-  #   if data:
-  #     break
-  
-  # processing the data
-  # print(data)
-  
-  
+
+ 
+  for i in range(1):
+    img1=mod_url+"\\frame"+str(i)+".png"
+    img2=mod_url+"\\frame"+str(i+1)+".png"
+    data=dcd_obj.decode(img1,img2)
   
 
   #------decrypting the cphr text to get plain text----#
-  # decrypt_obj=decpt_data()
-  # dkey=decrypt_obj.generate_key(d_passwd)
-  # hidden_message=decrypt_obj.decrypt(data,dkey)
-  mb.showinfo('secret message', data)
+  decrypt_obj=decpt_data()
+  dkey=decrypt_obj.generate_key(d_passwd)
+  hidden_message=decrypt_obj.decrypt(data,dkey)
+  mb.showinfo('secret message', hidden_message)
 
 
 
