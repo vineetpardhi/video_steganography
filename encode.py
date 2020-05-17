@@ -8,6 +8,9 @@ import os
 class encode_data(object):
 
 
+    def __init__(self):
+        self.rgb_list = []
+        self.rgb_list_enc = []
     def genData(self,data): 
           
         # list of binary codes 
@@ -17,7 +20,6 @@ class encode_data(object):
         for i in str(data,'utf-8'): 
             newd.append(format(ord(i), '08b')) 
         return newd
-
     def modPix(self,pix1,pix2,data): 
         
         datalist =self. genData(data) 
@@ -35,7 +37,7 @@ class encode_data(object):
             pix2 = [value for value in imdata2.__next__()[:3] +
                                     imdata2.__next__()[:3] +
                                     imdata2.__next__()[:3]]
-                                    
+            self.rgb_list.append(pix2)                       
             # Pixel value should be made  
             # odd for 1 and even for 0 
             for j in range(0, 8): 
@@ -56,17 +58,20 @@ class encode_data(object):
             else: 
                 if (abs(pix1[-1]-pix2[-1]) % 2 != 0): 
                     pix2[-1] -= 1
-    
+            
             pix = tuple(pix2) 
+            self.rgb_list_enc.append(pix2)
             yield pix[0:3] 
             yield pix[3:6] 
             yield pix[6:9] 
     
-    def encode_enc(self,newimg1,newimg2, data): 
+    
+    def encode_enc(self,newimg1,newimg2, data,enc_length): 
         w = newimg2.size[0] 
         (x, y) = (0, 0) 
         
-        for pixel in self.modPix(newimg1.getdata(),newimg2.getdata(), data): 
+        for pixel in self.modPix(newimg1.getdata(),newimg2.getdata(), data):
+            enc_length+=1 
             
             # Putting modified pixels in the new image 
             newimg2.putpixel((x, y), pixel) 
@@ -75,18 +80,42 @@ class encode_data(object):
                 y += 1
             else: 
                 x += 1
+        return enc_length
                 
     # Encode data into image 
-    def encode(self,img1,img2,data):
+    def encode(self,img1,img2,data,enc_length):
         image1 = Image.open(img1, 'r')
         image2=Image.open(img2,'r')  
         if (len(data) == 0): 
             raise ValueError('Data is empty') 
         newimg1 = image1.copy()
         newimg2= image2.copy() 
-        self.encode_enc(newimg1,newimg2,data) 
+        enc_length=self.encode_enc(newimg1,newimg2,data,enc_length) 
         
+        print(self.rgb_list[0:5])
+        print(self.rgb_list_enc[0:5])
 
-        newimg2.save(img2, str(img2.split(".")[1].upper())) 
+        sum_squared_error = 0
+
+        rg1=np.array(self.rgb_list)
+        rg2=np.array(self.rgb_list_enc)
+
+        rg1.flatten()
+        rg2.flatten()
+
+        for ctr in range(len(rg1)):
+                err = rg1[ctr] - rg2[ctr]
+                sum_squared_error += err*err
+
+        mean_squared_error = sum_squared_error/len(rg1)
+        print('mean squared error is:'+str(mean_squared_error))
+        print('root mean square error is:'+str(pow(mean_squared_error,0.5)))
+
+
+        
+         
+        newimg2.save(img2, str(img2.split(".")[1].upper()))
+
+        return enc_length 
   
     

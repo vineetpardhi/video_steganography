@@ -10,7 +10,7 @@ import os
 
 class decd_data(object):
 
-    def decode(self,img1,img2): 
+    def decode(self,img1,img2,flag): 
         image2 = Image.open(img2, 'r')
         image1= Image.open(img1,'r') 
         
@@ -19,8 +19,12 @@ class decd_data(object):
         imgdata2 = iter(image2.getdata())
 
         
-
+        i=0
         while (True):
+            i+=1
+            
+
+
             pixels1=[value for value in imgdata1.__next__()[:3] +
                                     imgdata1.__next__()[:3] +
                                     imgdata1.__next__()[:3] ]
@@ -41,7 +45,12 @@ class decd_data(object):
             data += chr(int(binstr, 2)) 
             if ( abs(pixels1[-1]-pixels2[-1]) % 2 != 0):
                 print('no more data') 
-                return data 
+                return data,1
+
+            if(i-1==(image1.size[0]*image1.size[1])//3 and flag==0 ):
+                return data,0
+
+             
 
 
 

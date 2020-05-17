@@ -10,11 +10,44 @@ from tkinter import messagebox as mb
 import os
 from functools import partial
 from conv_to_vd import cnvt_vdo
+import re
 
 def encode(e1,e2,e3):
     hide_message=(e1.get())
     url=(e2.get())
     password=(e3.get())
+
+
+
+
+
+    while True:   
+      if (len(password)<8): 
+          flag = -1
+          break
+      elif not re.search("[a-z]", password): 
+          flag = -1
+          break
+      elif not re.search("[A-Z]", password): 
+          flag = -1
+          break
+      elif not re.search("[0-9]", password): 
+          flag = -1
+          break
+      elif not re.search("[_@$]", password): 
+          flag = -1
+          break
+      elif re.search("\s", password): 
+          flag = -1
+          break
+      else: 
+          flag = 0
+          break
+  
+    if flag ==-1:
+      mb.showwarning("warning","pass word is not valid")
+      return 
+        
     
 
     enpt_obj=enc_class()
@@ -38,11 +71,14 @@ def encode(e1,e2,e3):
 
     #calling the main encoding function#
     print('----------------------------encoding starts------------------------------------')                 
-
-    for i in range(1):
-      img1=mod_url+"\\frame"+str(i)+".png"
-      img2=mod_url+"\\frame"+str(i+1)+".png"
-      encd_obj.encode(img1,img2,cphr_text)
+    enc_length=0
+    frame_count=1
+    for i in range(count-1):
+      while(len(cphr_text)>=enc_length):
+        img1=mod_url+"\\frame"+str(i)+".png"
+        img2=mod_url+"\\frame"+str(i+1)+".png"
+        enc_length=encd_obj.encode(img1,img2,cphr_text,enc_length)
+      frame_count+=1  
     
 
 
@@ -92,12 +128,17 @@ def decode(e4,e5):
 
   data=str()
   
-
+  count=5
+  flag=0
  
-  for i in range(1):
-    img1=mod_url+"\\frame"+str(i)+".png"
-    img2=mod_url+"\\frame"+str(i+1)+".png"
-    data=dcd_obj.decode(img1,img2)
+  for i in range(count-1):
+    if(flag==0):
+      img1=mod_url+"\\frame"+str(i)+".png"
+      img2=mod_url+"\\frame"+str(i+1)+".png"
+      data,flag=dcd_obj.decode(img1,img2,flag)
+    else:
+      break
+      
   
 
   #------decrypting the cphr text to get plain text----#
