@@ -69,8 +69,9 @@ class encode_data(object):
     def encode_enc(self,newimg1,newimg2, data,enc_length): 
         w = newimg2.size[0] 
         (x, y) = (0, 0) 
-        
+        i=0
         for pixel in self.modPix(newimg1.getdata(),newimg2.getdata(), data):
+            i+=1
             enc_length+=1 
             
             # Putting modified pixels in the new image 
@@ -80,6 +81,12 @@ class encode_data(object):
                 y += 1
             else: 
                 x += 1
+            if(i-1==(newimg2.size[0]*newimg2.size[1])//3):
+                print('new_frame required')
+                return enc_length 
+
+
+            
         return enc_length
                 
     # Encode data into image 
@@ -92,8 +99,8 @@ class encode_data(object):
         newimg2= image2.copy() 
         enc_length=self.encode_enc(newimg1,newimg2,data,enc_length) 
         
-        print(self.rgb_list[0:5])
-        print(self.rgb_list_enc[0:5])
+        # print(self.rgb_list[0:5])
+        # print(self.rgb_list_enc[0:5])
 
         sum_squared_error = 0
 
@@ -108,8 +115,8 @@ class encode_data(object):
                 sum_squared_error += err*err
 
         mean_squared_error = sum_squared_error/len(rg1)
-        print('mean squared error is:'+str(mean_squared_error))
-        print('root mean square error is:'+str(pow(mean_squared_error,0.5)))
+        # print('mean squared error is:'+str(mean_squared_error))
+        # print('root mean square error is:'+str(pow(mean_squared_error,0.5)))
 
 
         

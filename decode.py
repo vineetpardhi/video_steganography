@@ -43,12 +43,13 @@ class decd_data(object):
                     binstr += '1'
                     
             data += chr(int(binstr, 2)) 
-            if ( abs(pixels1[-1]-pixels2[-1]) % 2 != 0):
-                print('no more data') 
-                return data,1
-
             if(i-1==(image1.size[0]*image1.size[1])//3 and flag==0 ):
                 return data,0
+            elif( abs(pixels1[-1]-pixels2[-1]) % 2 != 0):
+                print('decoded no more data') 
+                return data,1
+
+            
 
              
 
