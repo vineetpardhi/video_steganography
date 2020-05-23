@@ -11,15 +11,16 @@ import os
 from functools import partial
 from conv_to_vd import cnvt_vdo
 import re
+import cv2
 from PIL import ImageChops
 import math, operator
 from math import log10, sqrt
+import numpy as np
 
 
 
 
 def rmsdiff(im1, im2):
-    "Calculate the root-mean-square difference between two images"
     diff = ImageChops.difference(im1, im2)
     h = diff.histogram()
     sq = (value*((idx%256)**2) for idx, value in enumerate(h))
@@ -27,6 +28,11 @@ def rmsdiff(im1, im2):
     rms = math.sqrt(sum_of_squares/float(im1.size[0] * im1.size[1]))
     return rms
 
+def PSNR(original, compressed): 
+    mse = np.mean((original - compressed) ** 2) 
+    max_pixel = 255.0
+    psnr = 20 * log10(max_pixel / sqrt(mse)) 
+    return psnr 
 
 
 
@@ -80,7 +86,7 @@ def encode(e1,e2,e3):
     f.close()
 
     cphr_text=enpt_obj.encrypt(hide_message)
-    # print("the ciphertext is: "+str(cphr_text))
+    print("the ciphertext is: "+str(cphr_text))
   
 
     encd_obj=encode_data()
@@ -95,6 +101,22 @@ def encode(e1,e2,e3):
     head_tail=os.path.split(url)
     mod_url = os.path.join(head_tail[0],directory)
 
+
+
+    
+    direc2="new_frames"
+    ht=os.path.split(url)
+    n_url=os.path.join(ht[0],direc2)
+    os.mkdir(n_url)
+
+    #------before encoding---------------#
+   
+    
+
+    nimg1=encd_obj.save_img(n_url,mod_url+"\\frame1.png",'newframe.png')
+    
+
+    
     #calling the main encoding function#
     print('----------------------------encoding starts------------------------------------')                 
     enc_length=0
@@ -103,15 +125,30 @@ def encode(e1,e2,e3):
       if(len(cphr_text)>=enc_length):
         img1=mod_url+"\\frame"+str(i)+".png"
         img2=mod_url+"\\frame"+str(i+1)+".png"
-        enc_length=encd_obj.encode(img1,img2,cphr_text,enc_length)
+
+        enc_length=encd_obj.encode(img1,img2,cphr_text,enc_length,url)
         frame_count+=1
         print("storing in the frame"+str(i+1))
       else:
         break
     
 
+    
+    #---after encoding -----#
+    
+    nimg2=encd_obj.save_img(n_url,mod_url+"\\frame1.png",'newframe1.png')
+    iob1=Image.open(nimg1)
+    iob2=Image.open(nimg2)
+ 
 
-      
+    diff=rmsdiff(iob1, iob2)
+    print('the rmse difference is:'+str(diff))
+
+
+    original = cv2.imread(nimg1) 
+    compressed = cv2.imread(nimg2,1) 
+    value = PSNR(original, compressed) 
+    # print("PSNR value is "+str(value)+" dB")
 
     
         
@@ -126,17 +163,8 @@ def encode(e1,e2,e3):
     mb.showinfo('the encoded video is located at',enc_loc)
 
 
-    #----------------PSNR results-----------------#
-    # original = cv2.imread('/content/frame1_original.png') 
-    # compressed = cv2.imread('/content/frame1_encoded.png', 1) 
-    # value = PSNR(original, compressed) 
-    # print(f"PSNR value is {value} dB")
+
     
-    #---------------RMSE results----------------#
-    # img1=Image.open('/content/frame1_original.png')
-    # img2=Image.open('/content/frame1_encoded.png')
-    # rms=rmsdiff(img1,img2)
-    # print(f"the RMSE value is{rms}")
     
     
     
@@ -166,7 +194,7 @@ def decode(e4,e5):
   mod_url = os.path.join(head_tail[0],directory)
 
 
-  data=str()
+  dt_list=[]
   
   count=5
   flag=0
@@ -175,19 +203,21 @@ def decode(e4,e5):
     if(flag==0):
       img1=mod_url+"\\frame"+str(i)+".png"
       img2=mod_url+"\\frame"+str(i+1)+".png"
-      data,flag=dcd_obj.decode(img1,img2,flag)
-      # dt_list.append(c_data)
+      c_data,flag=dcd_obj.decode(img1,img2,flag)
+      dt_list.append(c_data)
       print('decoding from frame'+str(i+1))
     else:
       print("finished decoding")
       break
       
   
-  # data=''.join(dt_list)
+  data=str(''.join(dt_list))
+  print(data)
   #------decrypting the cphr text to get plain text----#
   decrypt_obj=decpt_data()
   dkey=decrypt_obj.generate_key(d_passwd)
   hid_messg=decrypt_obj.decrypt(str.encode(data),dkey)
+  
   
    
   wr_url=head_tail[0]
@@ -243,6 +273,7 @@ if __name__ == "__main__":
     tk.Button(master, text='Quit', command=master.quit).place(x = 470,y = 400)
     tk.Button(master, text='Encode', command=encode).place(x = 250,y = 190)
 
+    
 
     
     
